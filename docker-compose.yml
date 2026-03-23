@@ -1,0 +1,16 @@
+
+services:
+  db_vectorial:
+    build: ./infrastructure/database
+    container_name: rag_postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: rag_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql
+
+volumes:
+  pg_data:
