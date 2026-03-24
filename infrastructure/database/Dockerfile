@@ -14,7 +14,11 @@ RUN cd /tmp \
     && make \
     && make install
 
-# Limpiamos para reducir el tamaño de la imagen (nota la ruta /tmp/pgvector)
+# Limpiamos para reducir el tamaño de la imagen
 RUN apt-get remove -y build-essential git postgresql-server-dev-18 \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* /tmp/pgvector
+
+# COPIA EL SCRIPT DE INICIALIZACIÓN
+# PostgreSQL ejecutará este script automáticamente en el primer arranque
+COPY init.sql /docker-entrypoint-initdb.d/
