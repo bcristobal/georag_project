@@ -10,14 +10,19 @@ def build_collection_semantic_text(collection_data: dict) -> str:
     
     return f"Title: {title}. Description: {desc}. Keywords: {keywords}."
 
-def build_item_semantic_text(item_data: dict, collection_title: str = "Sentinel-2") -> str:
-    """Genera contexto semántico conciso para un item individual."""
+def build_item_semantic_text(item_data: dict, collection_title: str = "Sentinel-2", regiones: list = None) -> str:
+    """Genera contexto semántico conciso para un item individual, incluyendo regiones."""
     props = item_data.get('properties', {})
     grid = props.get('grid:code', 'Unknown')
     instruments = ", ".join(props.get('instruments', []))
     
-    return f"Satellite image from {collection_title}. Grid tile {grid} captured using {instruments} instruments."
-
+    texto_base = f"Satellite image from {collection_title}. Grid tile {grid} captured using {instruments} instruments."
+    
+    if regiones:
+        texto_regiones = ", ".join(regiones)
+        texto_base += f" Covers regions: {texto_regiones}."
+        
+    return texto_base
 
 class OllamaEmbedder:
     """Cliente ligero para generar embeddings locales sin dependencias de PyTorch/HF."""
