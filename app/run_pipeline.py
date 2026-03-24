@@ -11,6 +11,7 @@ db = VectorStorage(DSN)
 embedder = OllamaEmbedder()
 crawler = STACCrawler("https://stac.dataspace.copernicus.eu/v1/")
 
+"""
 # 2. Descargar TODOS los metadatos (Colección + Items)
 print("\n=== FASE 1: DESCARGA DE METADATOS STAC ===")
 ruta_coleccion = crawler.download_collection(COLLECTION_NAME, OUTPUT_DIR)
@@ -24,6 +25,7 @@ db.insert_collection_from_json(ruta_coleccion, embedding_func=embedder.embed)
 
 print("Inyectando Items...")
 db.insert_items_from_feature_collection(ruta_items, embedding_func=embedder.embed)
+"""
 
 # 4. Buscar
 print("\n=== FASE 3: PRUEBA DE RETRIEVAL ===")
