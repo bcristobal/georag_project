@@ -47,8 +47,8 @@ class VectorStorage:
             conn.commit()
             print(f"Collection '{params['collection_id']}' insertada con éxito.")
 
-    def insert_items_from_feature_collection(self, filepath: str, collection_title: str = "Sentinel-2", embedding_func: Optional[Callable] = None):
-        """Lee un JSON FeatureCollection, extrae los enlaces útiles y carga los items."""
+    def insert_items_from_feature_collection(self, filepath: str, collection_title: str = "Sentinel-2", embedding_func: Optional[Callable] = None, enricher=None):
+        """Lee un JSON FeatureCollection, extrae los enlaces útiles, enriquece espacialmente y carga los items."""
         with open(filepath, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
@@ -80,7 +80,15 @@ class VectorStorage:
                     https_href = asset_data.get("alternate", {}).get("https", {}).get("href")
                     clean_assets_urls[asset_name] = https_href if https_href else default_href
 
-                semantic_text = build_item_semantic_text(feature, collection_title)
+                # --- MAGIA DE ENRIQUECIMIENTO AQUÍ ---
+                regiones = []
+                if enricher and geom_dict:
+                    regiones = enricher.obtener_municipios(geom_dict)
+                
+                # Construimos el texto semántico con las regiones incluidas
+                semantic_text = build_item_semantic_text(feature, collection_title, regiones)
+                
+                # Generamos el vector a partir del texto ya enriquecido
                 vector = embedding_func(semantic_text) if embedding_func else [0.05] * self.embedding_dim
 
                 params = {

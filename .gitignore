@@ -21,4 +21,6 @@ uv.lock
 # Colección de datos descargada
 descargas_stac/
 
+# Datos de límites administrativos y físicos
 geoBoundariesCGAZ_ADM2/
+10m_physical/
