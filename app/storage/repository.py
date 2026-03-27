@@ -88,7 +88,7 @@ class VectorStorage:
                 # Construimos el texto semántico con las regiones incluidas
                 semantic_text = build_item_semantic_text(feature, collection_title, regiones)
                 
-                # Generamos el vector a partir del texto ya enriquecido
+                # Generamos el vector
                 vector = embedding_func(semantic_text) if embedding_func else [0.05] * self.embedding_dim
 
                 params = {
@@ -117,7 +117,45 @@ class VectorStorage:
                         %(assets_urls)s, %(semantic_text)s, %(embedding)s
                     ) ON CONFLICT (item_id) DO NOTHING;
                 """, params)
-            
+                
+                item_id = feature.get("id")
+
+                # 2. Insertamos País, Región y Relación
+                if regiones:
+                    for r_data in regiones:
+                        pais_name = r_data["pais"]
+                        region_name = r_data["region"]
+                        
+                        # Guardar País si no existe
+                        conn.execute("""
+                            INSERT INTO Country (name) VALUES (%s)
+                            ON CONFLICT (name) DO NOTHING;
+                        """, (pais_name,))
+                        
+                        # Recuperar ID del País
+                        country_id = conn.execute(
+                            "SELECT id FROM Country WHERE name = %s", (pais_name,)
+                        ).fetchone()[0]
+
+                        # Guardar Región vinculada al País
+                        conn.execute("""
+                            INSERT INTO Region (name, country_id) VALUES (%s, %s)
+                            ON CONFLICT (name, country_id) DO NOTHING;
+                        """, (region_name, country_id))
+                        
+                        # Recuperar ID de la Región
+                        region_id = conn.execute(
+                            "SELECT id FROM Region WHERE name = %s AND country_id = %s", 
+                            (region_name, country_id)
+                        ).fetchone()[0]
+
+                        # Guardar Relación (Item_Region)
+                        conn.execute("""
+                            INSERT INTO Item_Region (item_id, region_id) 
+                            VALUES (%s, %s)
+                            ON CONFLICT (item_id, region_id) DO NOTHING;
+                        """, (item_id, region_id))
+
             conn.commit()
             print(f"Se procesaron {len(features)} items correctamente de {filepath}.")
 

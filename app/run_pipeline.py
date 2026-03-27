@@ -16,12 +16,12 @@ embedder = OllamaEmbedder()
 crawler = STACCrawler("https://stac.dataspace.copernicus.eu/v1/")
 enricher = EnriquecedorADM2(SHP_PATH) # <-- Cargamos el shapefile en memoria
 
-
+"""
 # 2. Descargar TODOS los metadatos (Colección + Items)
 print("\n=== FASE 1: DESCARGA DE METADATOS STAC ===")
 ruta_coleccion = crawler.download_collection(COLLECTION_NAME, OUTPUT_DIR)
 ruta_items = crawler.download_items(COLLECTION_NAME, [-11.1, 34.7, 4.9, 44.1], 2015, 2015, OUTPUT_DIR)
-
+"""
 
 ruta_items = f"{OUTPUT_DIR}/{COLLECTION_NAME}_completos.json" # Usamos los que ya tienes
 ruta_coleccion = f"{OUTPUT_DIR}/{COLLECTION_NAME}_metadata.json" 

@@ -33,13 +33,14 @@ class EnriquecedorADM2:
             area = tile_shape.intersection(fila.geometry).area
             
             resultados.append({
-                "texto": f"{region} ({pais})",
+                "region": region,
+                "pais": pais,
                 "peso": area
             })
             
-        # Devolvemos la lista ordenada por el área ocupada
+        # Devolvemos la lista ordenada por el área ocupada pero como diccionarios
         resultados.sort(key=lambda x: x["peso"], reverse=True)
-        return [r["texto"] for r in resultados]
+        return [{"region": r["region"], "pais": r["pais"]} for r in resultados]
 
 # --- Ejemplo de uso en tu pipeline ---
 # Instancias esto UNA SOLA VEZ al iniciar tu app/pipeline

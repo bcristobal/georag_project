@@ -19,7 +19,8 @@ def build_item_semantic_text(item_data: dict, collection_title: str = "Sentinel-
     texto_base = f"Satellite image from {collection_title}. Grid tile {grid} captured using {instruments} instruments."
     
     if regiones:
-        texto_regiones = ", ".join(regiones)
+        # Extraemos el texto a partir de los diccionarios
+        texto_regiones = ", ".join([f"{r['region']} ({r['pais']})" for r in regiones])
         texto_base += f" Covers regions: {texto_regiones}."
         
     return texto_base

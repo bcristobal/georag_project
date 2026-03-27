@@ -47,8 +47,9 @@ CREATE TABLE IF NOT EXISTS Country (
 
 CREATE TABLE IF NOT EXISTS Region (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    collection_id text REFERENCES Collection(collection_id) ON DELETE CASCADE,
-    name text NOT NULL
+    country_id uuid REFERENCES Country(id) ON DELETE CASCADE,
+    name text NOT NULL,
+    UNIQUE(name, country_id) -- Evita duplicados de la misma región en el mismo país
 );
 
 -- NUEVA TABLA INTERMEDIA: Relación estricta muchos a muchos
