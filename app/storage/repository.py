@@ -83,7 +83,7 @@ class VectorStorage:
                 # --- MAGIA DE ENRIQUECIMIENTO AQUÍ ---
                 regiones = []
                 if enricher and geom_dict:
-                    regiones = enricher.obtener_municipios(geom_dict)
+                    regiones = enricher.obtener_regiones(geom_dict)
                 
                 # Construimos el texto semántico con las regiones incluidas
                 semantic_text = build_item_semantic_text(feature, collection_title, regiones)
